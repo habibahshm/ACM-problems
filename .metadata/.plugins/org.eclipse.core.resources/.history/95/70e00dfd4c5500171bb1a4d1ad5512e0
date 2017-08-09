@@ -1,0 +1,54 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class CollectingBeepers {
+	static char[][] grid;
+	static int beepers, maxx, maxy, sx, sy;
+	static int INF = (int) 1e9;
+	static boolean[][] visited;
+
+	public static int minPath(int x, int y, int bn) {
+
+		if (x == maxx || x < 0 || y < 0 || y == maxy || visited[y][x])
+			return INF;
+
+		if (grid[y][x] == 'x') {
+			bn++;
+			if (bn == beepers)
+				return Math.abs(x - sx) + Math.abs(y - sy);
+		}
+		visited[y][x] = true;
+		int right = minPath(x + 1, y, bn);
+		int left = minPath(x - 1, y, bn);
+		int up = minPath(x, y - 1, bn);
+		int down = minPath(x, y + 1, bn);
+		visited[y][x] = false;
+
+		return 1 + Math.min(right, Math.min(left, Math.min(up, down)));
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int t = Integer.parseInt(bf.readLine());
+		while (t-- > 0) {
+			StringTokenizer st = new StringTokenizer(bf.readLine());
+			maxx = Integer.parseInt(st.nextToken());
+			maxy = Integer.parseInt(st.nextToken());
+			grid = new char[maxy][maxx];
+			visited = new boolean[maxy][maxx];
+			st = new StringTokenizer(bf.readLine());
+			sx = Integer.parseInt(st.nextToken()) - 1;
+			sy = Integer.parseInt(st.nextToken()) - 1;
+			beepers = Integer.parseInt(bf.readLine());
+			for (int i = 0; i < beepers; i++) {
+				st = new StringTokenizer(bf.readLine());
+				int bx = Integer.parseInt(st.nextToken()) - 1;
+				int by = Integer.parseInt(st.nextToken()) - 1;
+				grid[by][bx] = 'x';
+			}
+			System.out.println("The shortest path has length " + minPath(sx, sy, 0));
+		}
+	}
+}

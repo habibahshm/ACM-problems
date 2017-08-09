@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;BrokenKeyboard_aka_BeijuText_11988.java&apos; to &apos;DataStuctures_problems/src&apos;&#x0A;- Original project: &apos;DataStructures&apos;&#x0A;- Destination element: &apos;DataStuctures_problems/src&apos;&#x0A;- Original element: &apos;BrokenKeyboard_aka_BeijuText_11988.java&apos;&#x0A;- Update references to refactored element" description="Move compilation unit" destination="=DataStuctures_problems/src" element1="/src&lt;{BrokenKeyboard_aka_BeijuText_11988.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1486645400744" units="1" version="1.0"/>
+</session>

@@ -1,0 +1,222 @@
+package adf.sample.module.algorithm;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.TreeMap;
+
+import adf.agent.develop.DevelopData;
+import adf.agent.info.AgentInfo;
+import adf.agent.info.ScenarioInfo;
+import adf.agent.info.WorldInfo;
+import adf.agent.module.ModuleManager;
+import adf.agent.precompute.PrecomputeData;
+import adf.component.module.algorithm.PathPlanning;
+import rescuecore2.misc.collections.LazyMap;
+import rescuecore2.standard.entities.Area;
+import rescuecore2.standard.entities.StandardEntity;
+import rescuecore2.worldmodel.Entity;
+import rescuecore2.worldmodel.EntityID;
+
+public class SamplePathPlanning extends PathPlanning {
+
+	static class Pair implements Comparable<Pair> {
+		private int parent;
+		private double f, h, g;
+
+		public Pair(int parent, double f, double g, double h) {
+			this.parent = parent;
+			this.f = f;
+			this.h = h;
+			this.g = g;
+		}
+
+		@Override
+		public int compareTo(Pair o) {
+			if (f > o.f)
+				return 1;
+			else if (f < o.f)
+				return -1;
+			else
+				return 0;
+
+		}
+
+	}
+
+	private int counter = 0;
+	private Map<EntityID, Set<EntityID>> graph;
+	private TreeMap<EntityID, Integer> entityInt = new TreeMap<EntityID, Integer>();// we
+	// gave
+	// each
+	// entityid
+	// a
+	// unique
+	// int
+	// equivalent
+	private TreeMap<Integer, EntityID> intEntity = new TreeMap<Integer, EntityID>();
+	private TreeMap<Integer, Pair> pairInt = new TreeMap<Integer, Pair>();// this
+																			// keeps
+																			// track
+																			// of
+																			// the
+																			// current
+																			// entityid's
+																			// parent
+																			// and
+																			// f
+	private EntityID from;
+	private Collection<EntityID> targets;
+	private List<EntityID> result;
+
+	public PathPlanning backtrack() {
+
+		return this;
+	}
+
+	public SamplePathPlanning(AgentInfo ai, WorldInfo wi, ScenarioInfo si, ModuleManager moduleManager,
+			DevelopData developData) {
+		super(ai, wi, si, moduleManager, developData);
+		this.init();
+	}
+
+	private void init() {
+		Map<EntityID, Set<EntityID>> neighbours = new LazyMap<EntityID, Set<EntityID>>() {
+			@Override
+			public Set<EntityID> createValue() {
+				return new HashSet<>();
+			}
+		};
+		for (Entity next : this.worldInfo) {
+			if (next instanceof Area) {
+				Collection<EntityID> areaNeighbours = ((Area) next).getNeighbours();
+				neighbours.get(next.getID()).addAll(areaNeighbours);
+			}
+		}
+		this.graph = neighbours;
+	}
+
+	@Override
+	public List<EntityID> getResult() {
+		return this.result;
+	}
+
+	@Override
+	public PathPlanning setFrom(EntityID id) {
+		this.from = id;
+		return this;
+	}
+
+	@Override
+	public PathPlanning setDestination(Collection<EntityID> targets) {
+		this.targets = targets;
+		return this;
+	}
+
+	@Override
+	public PathPlanning precompute(PrecomputeData precomputeData) {
+		super.precompute(precomputeData);
+		return this;
+	}
+
+	@Override
+	public PathPlanning resume(PrecomputeData precomputeData) {
+		super.resume(precomputeData);
+		return this;
+	}
+
+	@Override
+	public PathPlanning preparate() {
+		super.preparate();
+		return this;
+	}
+
+	public PathPlanning calc() {
+		EntityID targ = null;
+
+		entityInt.put(this.from, counter++);
+
+		pairInt.put(0, new Pair(0, 0, 0, 0));// from's id is zero
+		for (EntityID neighbour : targets) {
+			targ = neighbour;
+			break;
+		}
+		entityInt.put(targ, counter++);// our target's id is 1
+		intEntity.put(counter - 1, targ);
+		PriorityQueue<Pair> open = new PriorityQueue<Pair>();
+		open.add(new Pair(0, 0, 0, 0));
+		boolean found = false;
+		while (!open.isEmpty() && !found) {
+			if (found)
+				break;
+			Pair cur = open.remove();
+			EntityID current = intEntity.get(cur.parent);
+			int curID = cur.parent;
+			Collection<EntityID> neighbours = graph.get(current);
+			if (neighbours.isEmpty()) {
+				continue;
+			}
+			double ff = cur.f;
+			Pair curParent = pairInt.get(current);
+			if (curParent.f < ff)
+				continue;
+			for (EntityID neighbour : neighbours) {
+				// StandardEntity child =this.worldInfo.getEntity(this.from); //
+				// KEDA bn7wal men entityId to standard entity
+				if (neighbour == targ) {// still need to work on it
+					pairInt.put(1, new Pair(curID, 9, 1, 1));
+					found = true;
+					break;
+				}
+				double g = this.worldInfo.getDistance(neighbour, current) + cur.g;
+				double h = this.worldInfo.getDistance(neighbour, targ);
+				double f = g + h;
+
+				if (entityInt.containsKey(neighbour)) {
+					int nodeId = entityInt.get(neighbour);
+					Pair info = pairInt.get(nodeId);
+					if (info.f > f) {
+						pairInt.put(nodeId, new Pair(curID, f, g, h));
+						open.add(new Pair(nodeId, f, g, h));
+					}
+				} else {
+					entityInt.put(neighbour, counter++);
+					intEntity.put(counter - 1, neighbour);
+					pairInt.put(counter - 1, new Pair(curID, f, g, h));
+					open.add(new Pair(counter - 1, f, g, h));
+
+				}
+			}
+		}
+		if (!found) {
+			// No path
+			this.result = null;
+		}
+		// Walk back from goal to this.from
+
+		int parent = pairInt.get(1).parent;
+		LinkedList<EntityID> path = new LinkedList<EntityID>();
+		path.add(intEntity.get(1));
+		while (true) {
+			path.add(intEntity.get(parent));
+			if (parent == 0) {
+				break;
+			} else {
+				parent = pairInt.get(parent).parent;
+			}
+		}
+		if (!found)
+			this.result = path;
+
+		return this;
+	}
+
+	private boolean isGoal(EntityID e, Collection<EntityID> test) {
+		return test.contains(e);
+	}
+}

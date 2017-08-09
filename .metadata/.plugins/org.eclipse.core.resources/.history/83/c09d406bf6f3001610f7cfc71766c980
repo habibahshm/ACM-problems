@@ -1,0 +1,53 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class ILoveStrings {
+
+	static int[] KMP(char[] s) {
+		int n = s.length;
+		int[] pi = new int[n];
+
+		for (int i = 1, j = 0; i < n; i++) {
+			while (j > 0 && (s[i] != s[j]))
+				j = pi[j - 1];
+			if (s[i] == s[j])
+				j++;
+
+			pi[i] = j;
+		}
+
+		return pi;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int k = Integer.parseInt(bf.readLine());
+		while (k-- > 0) {
+			String s = bf.readLine();
+			int q = Integer.parseInt(bf.readLine());
+			while (q-- > 0) {
+				String t = bf.readLine();
+				StringBuilder sb = new StringBuilder();
+				sb.append(t);
+				sb.append("$");
+				sb.append(s);
+				int[] kmp = KMP(sb.toString().toCharArray());
+				System.out.println(Arrays.toString(kmp));
+				int l = t.length();
+				boolean found = false;
+				for (int i = l + 1; i < l; i++) {
+					if (kmp[i] == l) {
+						found = true;
+						break;
+					}
+				}
+				if (found)
+					System.out.println("y");
+				else
+					System.out.println("n");
+			}
+		}
+	}
+}

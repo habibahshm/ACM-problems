@@ -1,0 +1,17 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class BashsBigDay {
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int N = 100000;
+		int n = Integer.parseInt(bf.readLine());
+		int[] cnt = new int[N];
+		StringTokenizer st = new StringTokenizer(bf.readLine());
+		while (n-- > 0)
+			cnt[Integer.parseInt(st.nextToken())]++;
+
+	}
+}

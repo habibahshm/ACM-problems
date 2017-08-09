@@ -1,0 +1,77 @@
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Compromise {
+	static ArrayList<String> a;
+	static ArrayList<String> b;
+	static int[][] memo;
+	static boolean[] taken;
+	static PrintWriter out;
+
+	static int LCS(int i, int j) {
+		if (i == a.size() || j == b.size())
+			return memo[i][j] = 0;
+
+		if (memo[i][j] != -1)
+			return memo[i][j];
+
+		if (a.get(i).equals(b.get(j)))
+			return memo[i][j] = 1 + LCS(i + 1, j + 1);
+
+		int skip1 = LCS(i, j + 1);
+		int skip2 = LCS(i + 1, j);
+
+		return memo[i][j] = Math.max(skip1, skip2);
+	}
+
+	public static void print(int i, int j) {
+		if (i == a.size() || j == b.size())
+			return;
+
+		int best = memo[i][j];
+		if (best == memo[i + 1][j + 1] + 1 && a.get(i).equals(b.get(j)))
+			taken[i] = true;
+
+		print(i, j + 1);
+		print(i + 1, j);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		out = new PrintWriter(new FileWriter("testing.txt"));
+		while (true) {
+			a = new ArrayList<>();
+			b = new ArrayList<>();
+			String s;
+			StringTokenizer st;
+			while (!(s = bf.readLine()).equals("#")) {
+				st = new StringTokenizer(s);
+				while (st.hasMoreTokens())
+					a.add(st.nextToken());
+			}
+			while (!(s = bf.readLine()).equals("#")) {
+				st = new StringTokenizer(s);
+				while (st.hasMoreTokens())
+					b.add(st.nextToken());
+			}
+			System.out.println(a.toString());
+			System.out.println(b.toString());
+			memo = new int[a.size() + 1][b.size() + 1];
+			for (int i = 0; i < a.size(); i++)
+				Arrays.fill(memo[i], -1);
+			
+			LCS(0, 0);
+			taken = new boolean[a.size()];
+			print(0, 0);
+			for (int i = 0; i < a.size(); i++)
+				if (taken[i])
+					System.out.print(a.get(i) + " ");
+		}
+	}
+}

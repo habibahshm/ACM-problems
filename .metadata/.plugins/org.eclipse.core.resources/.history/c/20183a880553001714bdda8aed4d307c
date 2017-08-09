@@ -1,0 +1,41 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Stack;
+
+public class AnagramsbyStack {
+	static String target;
+	static String start;
+
+	public static Stack<Character> pushStack(Stack<Character> s, char c) {
+		s.push(c);
+		return s;
+	}
+
+	public static void search(String ans, String popped, Stack<Character> stack, int currIdx) {
+		//System.out.println(popped);
+
+		if (currIdx == start.length() && !popped.equals(target))
+			return;
+
+		if (popped.equals(target)) {
+			System.out.println(ans);
+			return;
+		}
+
+		search(ans + "i ", popped, pushStack(stack, start.charAt(currIdx)), ++currIdx);
+
+		if (!stack.isEmpty())
+			search(ans + "o ", popped + stack.pop(), stack, currIdx);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		start = bf.readLine();
+		target = bf.readLine();
+		System.out.println("[");
+		if (start.length() == target.length())
+			search("", "", new Stack<>(), 0);
+		System.out.println("]");
+	}
+}

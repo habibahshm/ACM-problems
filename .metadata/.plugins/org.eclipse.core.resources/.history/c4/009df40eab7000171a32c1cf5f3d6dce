@@ -1,0 +1,61 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class RedGreenTowers {
+	static int r, g, h;
+	static long[][] memo;
+	static int mod = (int) 1e9 + 7;
+
+	static long findh() {
+		long max = 0;
+		long lo = 1;
+		long hi = Math.max(r, g);
+
+		while (lo <= hi) {
+			long mid = lo + (hi - lo) / 2;
+			if (mid * (mid + 1) / 2 <= r + g) {
+				max = Math.max(max, mid);
+				lo = mid + 1;
+			} else
+				hi = mid - 1;
+		}
+
+		return max;
+	}
+
+	static long dp(int remr, int remg, int curlvl) {
+		if (curlvl == 0)
+			return 1;
+
+		if (memo[remr][remg] != -1)
+			return memo[remr][remg];
+
+		long red = 0;
+		long green = 0;
+
+		if (remr >= curlvl)
+			red = dp(remr - curlvl, remg, curlvl - 1) % mod;
+
+		if (remg >= curlvl)
+			green = dp(remr, remg - curlvl, curlvl - 1) % mod;
+
+		return memo[remr][remg] = red + green;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(bf.readLine());
+		r = Integer.parseInt(st.nextToken());
+		g = Integer.parseInt(st.nextToken());
+		h = (int) findh();
+		memo = new long[r + 1][g + 1];
+		for (int i = 0; i <= r; i++)
+			Arrays.fill(memo[i], -1);
+		//System.out.println(h);
+		System.out.println(dp(r, g, h) % mod);
+
+	}
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;DinnerwithEmma.java&apos; to &apos;Welcome/src/(default package)&apos;&#x0A;- Original project: &apos;GameTheory_problems&apos;&#x0A;- Destination element: &apos;Welcome/src/(default package)&apos;&#x0A;- Original element: &apos;DinnerwithEmma.java&apos;&#x0A;- Update references to refactored element" description="Move compilation unit" destination="=Welcome/src&lt;" element1="/src&lt;{DinnerwithEmma.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1500417842033" units="1" version="1.0"/>
+</session>

@@ -1,0 +1,34 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class RedGreenTowers {
+	static int r, g;
+	static int[][][] dp;
+
+	static int findh() {
+		int max = 0;
+		int lo = 1;
+		int hi = Math.max(r, g);
+
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+			if (mid * (mid + 1) / 2 <= r + g) {
+				max = Math.max(max, mid);
+				lo = mid + 1;
+			} else
+				hi = mid - 1;
+		}
+
+		return max;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(bf.readLine());
+		r = Integer.parseInt(st.nextToken());
+		g = Integer.parseInt(st.nextToken());
+
+	}
+}

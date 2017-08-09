@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+public class Stacks_week2p7 {
+	
+	static class Pair implements Comparable<Pair>{
+		int idx;
+		int size;
+		
+		public Pair(int i, int s){
+			idx =i;
+			size =s;
+		}
+
+		
+		public int compareTo(Pair o) {
+			if(size!=o.size)
+				return size - o.size;
+			return idx - o.idx;
+		}
+		
+	}
+	public static void main(String[] args) throws IOException {
+		//BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		BufferedReader bf = new BufferedReader(new FileReader("stacks.in"));
+		PrintWriter out = new PrintWriter(new FileWriter("stacks.out"));
+		int n = Integer.parseInt(bf.readLine());
+		int[]arr = new int[n];
+		StringTokenizer st = new StringTokenizer(bf.readLine());
+		for(int i=0; i<n; i++)
+			arr[i] = Integer.parseInt(st.nextToken());
+		PriorityQueue<Pair> pq =new PriorityQueue<>();
+		int max =0;
+		int no = 0;
+		for(int i=0; i<n; i++){
+			if(i==0){
+				pq.add(new Pair(0, 1));
+				max =1;
+			}else{
+				if(arr[i]==0){
+					Pair tmp = pq.poll();
+					pq.add(new Pair(tmp.idx,tmp.size+1));
+					max = Math.max(max, tmp.size+1);
+				}else{
+					pq.add(new Pair(++no, 1));
+				}
+			}
+		}
+		out.println(max);
+		out.flush();
+		out.close();
+	}
+}

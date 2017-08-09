@@ -1,0 +1,29 @@
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+
+public class testing {
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(new FileWriter("cases.out"));
+		StringTokenizer st;
+		String s;
+		int c = 1;
+		while (true) {
+			s = bf.readLine();
+			int m = Integer.parseInt(st.nextToken());
+			int n = Integer.parseInt(st.nextToken());
+			if (m == 1 && n == 1)
+				break;
+			out.println(c + ": " + s);
+			c++;
+		}
+
+		out.flush();
+		out.close();
+	}
+}

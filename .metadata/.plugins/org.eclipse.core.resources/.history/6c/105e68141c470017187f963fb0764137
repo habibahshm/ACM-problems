@@ -1,0 +1,29 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class TheSternBrocotNumberSystem {
+	static double EPS = 1e-10;
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int m, n;
+		StringTokenizer st = new StringTokenizer(bf.readLine());
+		while ((m = Integer.parseInt(st.nextToken())) != 1 && (n = Integer.parseInt(st.nextToken())) != 1) {
+			int lm = 0;
+			int ln = 1;
+			int mid = 1;
+			int rm = 1;
+			int rn = 0;
+		    String ans = "";
+			
+		    double target = m*1.0/n;
+		    
+		    while(Math.abs(mid-target) > EPS){
+		    	
+		    }
+		    
+		}
+	}
+}

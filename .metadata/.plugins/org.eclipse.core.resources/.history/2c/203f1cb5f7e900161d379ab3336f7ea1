@@ -1,0 +1,167 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+public class Streets {
+	static ArrayList<Edge>[] adjlist;
+	static final int INF = (int) 1e9;
+	static ArrayList<Info> shades;
+	static int N;
+
+	// Single Source Shortest Path on Weighted graph
+	public static double dijkstra(int s, int t) {
+		double[] dist = new double[N + 2];
+		Arrays.fill(dist, INF);
+		dist[s] = 0;
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		pq.add(new Edge(s, 0));
+		while (!pq.isEmpty()) {
+			Edge u = pq.poll();
+			if (u.cost > dist[u.v])
+				continue;
+			if (u.v == t)
+				return dist[u.v];
+			for (int i = 0; i < adjlist[u.v].size(); i++) {
+				Edge v = adjlist[u.v].get(i);
+				if (dist[u.v] + v.cost < dist[v.v]) {
+					dist[v.v] = dist[u.v] + v.cost;
+					pq.add(new Edge(v.v, dist[v.v]));
+				}
+			}
+		}
+		return -1;
+	}
+
+	static class Edge implements Comparable<Edge> {
+		int v;
+		double cost;
+
+		Edge(int v, double cost) {
+			this.v = v;
+			this.cost = cost;
+		}
+
+		public int compareTo(Edge e) {
+			if (cost > e.cost )
+				return 1;
+			if (cost  < e.cost)
+				return -1;
+			return v - e.v;
+		}
+	}
+
+	public static class Info {
+		int h;
+		int w;
+		int d;
+		boolean rightside;
+
+		public Info(int he, int wi, int di, int r) {
+			h = he;
+			w = wi;
+			d = di;
+			rightside = (r == 1);
+		}
+	}
+
+	public static double dist(int x1, int y1, int x2, int y2) {
+		int dx = x1 - x2;
+		int dy = y1 - y2;
+
+		if (x1 == x2)
+			return (Math.abs(y1 - y2));
+		if (y1 == y2)
+			return (Math.abs(x1 - x2));
+		return Math.sqrt((dx * dx) + (dy * dy));
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		// BufferedReader bf = new BufferedReader(new FileReader("street.in"));
+		int t = Integer.parseInt(bf.readLine());
+		while (t-- > 0) {
+			StringTokenizer st = new StringTokenizer(bf.readLine());
+			N = Integer.parseInt(st.nextToken());
+			int l = Integer.parseInt(st.nextToken());
+			int w = Integer.parseInt(st.nextToken());
+			shades = new ArrayList<>();
+			for (int i = 0; i < N; i++) {
+				st = new StringTokenizer(bf.readLine());
+				int h = Integer.parseInt(st.nextToken());
+				int wi = Integer.parseInt(st.nextToken());
+				int d = Integer.parseInt(st.nextToken());
+				int r = Integer.parseInt(st.nextToken());
+				shades.add(new Info(h, wi, d, r));
+			}
+
+			adjlist = new ArrayList[N + 2];
+			for (int i = 0; i < N + 2; i++)
+				adjlist[i] = new ArrayList<>();
+
+			for (int i = 0; i < N; i++) {
+				Info curr = shades.get(i);
+				adjlist[0].add(new Edge(i + 1, curr.d));
+				adjlist[i + 1].add(new Edge(0, curr.d));
+				adjlist[i + 1].add(new Edge(N + 1, l - (curr.d + curr.h)));
+				adjlist[N + 1].add(new Edge(i + 1, l - (curr.d + curr.h)));
+			}
+			for (int i = 0; i < N; i++) {
+				Info from = shades.get(i);
+				for (int j = i + 1; j < N; j++) {
+					Info to = shades.get(j);
+					if ((from.rightside && to.rightside) || (!from.rightside && !to.rightside)) {
+						if (from.d + from.h <= to.d) {
+							adjlist[i + 1].add(new Edge(j + 1, to.d - (from.d + from.h)));
+							adjlist[j + 1].add(new Edge(i + 1, to.d - (from.d + from.h)));
+						}
+						if (to.d + to.h <=from.d) {
+							adjlist[i + 1].add(new Edge(j + 1, from.d - (to.d + to.h)));
+							adjlist[j + 1].add(new Edge(i + 1, from.d - (to.d + to.h)));
+						}
+					} else if ((from.d >= to.d && from.d <= to.d + to.h)
+							|| (from.d + from.h >= to.d && from.d + from.h <= to.d + to.h)
+							|| (from.d <= to.d && from.d + from.h >= to.d + to.h)) {
+						int tmp = w - (from.w + to.w);
+						adjlist[i + 1].add(new Edge(j + 1, tmp));
+						adjlist[j + 1].add(new Edge(i + 1, tmp));
+					} else {
+						if (from.d + from.h < to.d) {
+							if (!from.rightside) {
+								double tmp = dist(from.w, from.d + from.h, w - to.w, to.d);
+								adjlist[i + 1].add(new Edge(j + 1, tmp));
+								adjlist[j + 1].add(new Edge(i + 1, tmp));
+							} else {
+								double tmp = dist(to.w, to.d, w - from.w, from.d + from.h);
+								adjlist[i + 1].add(new Edge(j + 1, tmp));
+								adjlist[j + 1].add(new Edge(i + 1, tmp));
+							}
+						} else if (from.d > to.d + to.h) {
+							if (!from.rightside) {
+								double tmp = dist(from.w, from.d, w - to.w, to.d + to.h);
+								adjlist[i + 1].add(new Edge(j + 1, tmp));
+								adjlist[j + 1].add(new Edge(i + 1, tmp));
+							} else {
+								double tmp = dist(to.w, to.d + to.h, w - from.w, from.d);
+								adjlist[i + 1].add(new Edge(j + 1, tmp));
+								adjlist[j + 1].add(new Edge(i + 1, tmp));
+							}
+						}
+					}
+
+				}
+			}
+			for (int i = 1; i < N + 2; i++) {
+				System.out.print(i + ": ");
+				for(Edge a: adjlist[i])
+					System.out.print("("+a.v+","+a.cost+") ");
+				System.out.println();
+			}
+			System.out.printf("%.6f%n", dijkstra(0, N + 1));
+		}
+	}
+}

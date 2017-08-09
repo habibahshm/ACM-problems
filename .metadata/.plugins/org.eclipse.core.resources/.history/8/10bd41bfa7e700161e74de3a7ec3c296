@@ -1,0 +1,81 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+public class Itisallaboutwisdom {
+	static ArrayList<Edge>[] adjlist;
+	static int N;
+	static int k;
+	static ArrayList<Path> possiblePaths;
+	static boolean[]visited;
+	static int[]dist;
+	static int[]maxWisdom;
+
+	public static class Path {
+		int cost;
+		int wisdom;
+
+		public Path(int c, int w) {
+			cost = c;
+			wisdom = w;
+		}
+	}
+
+	public static class Edge {
+		int node;
+		int cost;
+		int wisdom;
+
+		public Edge(int n, int c, int w) {
+			node = n;
+			cost = c;
+			wisdom = w;
+		}
+	}
+	
+	public static void dfs(int node,int cost, int maxW){
+		
+		if(node == N){
+			possiblePaths.add(new Path(cost,maxW));
+			return;
+		}
+		visited[node] = true;
+		
+		for(Edge v: adjlist[node]){
+			if(!visited[v.node]){
+				dist[v.node] = dist[node]+v.cost;
+				dfs(v.node,dist[v.node],Math.max(maxWisdom[node], v.wisdom));
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int t = Integer.parseInt(bf.readLine());
+		while (t-- > 0) {
+			possiblePaths = new ArrayList<>();
+			StringTokenizer st = new StringTokenizer(bf.readLine());
+			N = Integer.parseInt(st.nextToken());
+			int m = Integer.parseInt(st.nextToken());
+			k = Integer.parseInt(st.nextToken());
+			
+			adjlist = new ArrayList[N+1];
+			for(int i=0; i<=N; i++)
+				adjlist[i] = new ArrayList<>();
+			
+			while(m-- >0){
+				st = new StringTokenizer(bf.readLine());
+				int from = Integer.parseInt(st.nextToken());
+				int to =Integer.parseInt(st.nextToken());
+				int c = Integer.parseInt(st.nextToken());
+				int w =Integer.parseInt(st.nextToken());
+				adjlist[from].add(new Edge(to,c,w));
+				adjlist[to].add(new Edge(from,c,w));
+			}
+			
+			visited = new boolean[N+1];
+		}
+	}
+}

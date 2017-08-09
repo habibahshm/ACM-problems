@@ -1,0 +1,107 @@
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+
+public class CollectingBeepers {
+
+	public static boolean isNext(int[] arr) {
+		int len = arr.length;
+		int prev = arr[len - 1];
+		for (int i = len - 2; i >= 0; i--) {
+			if (arr[i] < prev)
+				return true;
+			prev = arr[i];
+		}
+		return false;
+	}
+
+	public static int[] nextPerm(int[] arr) {
+		int len = arr.length;
+		int prev = arr[len - 1];
+		int i;
+		for (i = len - 2; i >= 0; i--) {
+			if (arr[i] < prev)
+				break;
+			prev = arr[i];
+		}
+		for (int j = len - 1; j > i; j--) {
+			if (arr[j] > arr[i]) {
+				int tmp = arr[j];
+				arr[j] = arr[i];
+				arr[i] = tmp;
+				break;
+			}
+		}
+		int s = i + 1;
+		int e = len - 1;
+		while (s < e) {
+			int tmp = arr[s];
+			arr[s] = arr[e];
+			arr[e] = tmp;
+			s++;
+			e--;
+		}
+		return arr;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int t = Integer.parseInt(bf.readLine());
+		while (t-- > 0) {
+			StringTokenizer st = new StringTokenizer(bf.readLine());
+			int maxx = Integer.parseInt(st.nextToken());
+			int maxy = Integer.parseInt(st.nextToken());
+
+			st = new StringTokenizer(bf.readLine());
+			int sx = Integer.parseInt(st.nextToken());
+			int sy = Integer.parseInt(st.nextToken());
+			int beepers = Integer.parseInt(bf.readLine());
+			int[] x = new int[beepers + 1];
+			int[] y = new int[beepers + 1];
+			x[0] = sx;
+			y[0] = sy;
+			for (int i = 1; i <= beepers; i++) {
+				st = new StringTokenizer(bf.readLine());
+				x[i] = Integer.parseInt(st.nextToken());
+				y[i] = Integer.parseInt(st.nextToken());
+			}
+			int[][] dist = new int[beepers + 1][beepers + 1];
+			for (int i = 0; i <= beepers; i++) {
+				for (int j = i + 1; j <= beepers; j++) {
+					dist[i][j] = dist[j][i] = Math.abs(x[i] - x[j]) + Math.abs(y[i] - y[j]);
+					//System.out.print(dist[i][j] + " ");
+				}
+				//System.out.println();
+			}
+
+			int[] perm = new int[beepers];
+			for (int i = 0; i < beepers; i++)
+				perm[i] = i + 1;
+			int ans = dist[0][perm[0]];
+			for (int i = 0; i < beepers - 1; i++)
+				ans += dist[perm[i]][perm[i + 1]];
+			ans += dist[0][perm[beepers - 1]];
+
+			while (isNext(perm)) {
+				perm = nextPerm(perm);
+				int tmp = dist[0][perm[0]];
+				for (int i = 0; i < beepers - 1; i++)
+					tmp += dist[perm[i]][perm[i + 1]];
+				tmp += dist[0][perm[beepers - 1]];
+				 ans = Math.min(ans, tmp);
+//				if (tmp < ans) {
+//					ans = tmp;
+//					System.out.print("min perm: ");
+//					for (int i = 0; i < beepers; i++)
+//						System.out.print(perm[i] + " ");
+//					System.out.println();
+//				}
+			}
+
+			System.out.println("The shortest path has length " + ans);
+		}
+	}
+}

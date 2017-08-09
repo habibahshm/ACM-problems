@@ -1,0 +1,32 @@
+
+public class Os {
+	static int mod(int x, int y) {
+		if (x < y)
+			return x;
+		else {
+
+			int q = div(x, y);
+			return (x - (q * y));
+		}
+	}
+
+	static int div(int x, int y) {
+		int i = 0;
+		int f = 0;
+		if (x < y)
+			return 0;
+		else {
+			f = (i + 1) * y;
+			while (f <= x) {
+
+				i = i + 1;
+				f = (i + 1) * y;
+			}
+			return i;
+		}
+	}
+
+	public static void main(String[] args) {
+		System.out.println(div(101, 2) + " " + mod(40, 5));
+	}
+}

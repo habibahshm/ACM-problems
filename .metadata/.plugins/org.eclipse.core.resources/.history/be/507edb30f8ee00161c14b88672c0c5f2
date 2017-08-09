@@ -1,0 +1,23 @@
+import java.io.BufferedReader;
+import java.io.IOError;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class ChoosingSymbolPairs {
+	static int[] lf = new int[26];
+	static int[] df = new int[10];
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		String s = bf.readLine();
+		char[] ch = s.toCharArray();
+		long ans = 0;
+		for (char c : ch) {
+			if (c >= 'a' && c <= 'z')
+				lf[c - 'a']++;
+			else
+				df[Integer.parseInt(c + "")]++;
+		}
+		
+	}
+}

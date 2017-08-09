@@ -1,0 +1,37 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
+public class IsBiggerSmarter {
+	static class Triple implements Comparable<Triple> {
+		int w;
+		int iq;
+		int idx;
+
+		public Triple(int a, int b, int c) {
+			w = a;
+			iq = b;
+			idx = c;
+		}
+
+		@Override
+		public int compareTo(Triple o) {
+			if (w != o.w)
+				return w - o.w;
+			return o.iq - iq;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		ArrayList<Triple> e = new ArrayList<>();
+		StringTokenizer st;
+		int i = 1;
+		while (bf.ready()) {
+			st = new StringTokenizer(bf.readLine());
+			e.add(new Triple(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), i++));
+		}
+	}
+}

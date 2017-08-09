@@ -1,0 +1,33 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class AdditionChains {
+	static int[] generatedSeq, ansSeq, minDepth;
+	static int leastLengthSofar;
+
+	public static void computeDepth(int n) {
+		minDepth = new int[n + 1];
+		for (int i = 1; i <= n; i++) {
+			int currentNum = i;
+			int cnt = 0;
+			for (; currentNum < n; cnt++)
+				currentNum <<= 1;
+			minDepth[i] = cnt;
+		}
+	}
+	
+	public static void dfs(int d, int n){
+		
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int n;
+		while ((n = Integer.parseInt(bf.readLine())) != 0) {
+			generatedSeq = new int[n + 1];
+			ansSeq = new int[n + 1];
+            computeDepth(n);
+		}
+	}
+}

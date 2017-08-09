@@ -1,0 +1,79 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class RedGreenTowers {
+	static int r, g, h;
+	static int[][][] dp ;
+	static int mod = (int) 1e9 + 7;
+
+	static int findh() {
+		int max = 0;
+		int lo = 1;
+		int hi = Math.max(r, g);
+
+		while (lo <= hi) {
+			int mid = (lo + hi) / 2;
+			if (mid * (mid + 1) / 2 <= r + g) {
+				max = Math.max(max, mid);
+				lo = mid + 1;
+			} else
+				hi = mid - 1;
+		}
+
+		return max;
+	}
+
+//	static int dp(int remr, int remg, int curlvl) {
+//		if (curlvl == 0)
+//			return 1;
+//
+//		if (memo[remr][remg][curlvl] != -1)
+//			return memo[remr][remg][curlvl];
+//
+//		int red = 0;
+//		int green = 0;
+//
+//		if (remr >= curlvl)
+//			red = dp(remr - curlvl, remg, curlvl - 1) % mod;
+//
+//		if (remg >= curlvl)
+//			green = dp(remr, remg - curlvl, curlvl - 1) % mod;
+//
+//		return memo[remr][remg][curlvl] = red + green;
+//	}
+
+	static void dp() {
+		for (int i = 0; i <= r; i++)
+			for (int j = 0; j <= g; j++)
+				dp[i][j][0] = 1;
+
+		for (int remr = 0; remr <= 200000; remr++) {
+			for (int remg = 0; remg <= 200000; remg++) {
+				for (int curlvl = 1; curlvl <= h; curlvl++) {
+					if (remr - curlvl >= 0)
+						dp[remr][remg][curlvl] = dp[remr - curlvl][remg][curlvl - 1];
+
+					if (remg - curlvl >= 0)
+						dp[remr][remg][curlvl] += dp[remr][remg - curlvl][curlvl - 1];
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(bf.readLine());
+		r = Integer.parseInt(st.nextToken());
+		g = Integer.parseInt(st.nextToken());
+		h = findh();
+		dp = new int[200001][200001][h+1];
+		for (int i = 0; i <= r; i++)
+			for (int j = 0; j <= g; j++)
+				Arrays.fill(memo[i][j], -1);
+		// System.out.println(h);
+		System.out.println(dp(r, g, h) % mod);
+	}
+}

@@ -1,0 +1,30 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class CollectingBeepers {
+	static char[][] grid;
+	static int beepers;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int t = Integer.parseInt(bf.readLine());
+		while (t-- > 0) {
+			StringTokenizer st = new StringTokenizer(bf.readLine());
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+			grid = new char[y][x];
+			st = new StringTokenizer(bf.readLine());
+			int sx = Integer.parseInt(st.nextToken());
+			int sy = Integer.parseInt(st.nextToken());
+			beepers = Integer.parseInt(bf.readLine());
+			for (int i = 0; i < beepers; i++) {
+				st = new StringTokenizer(bf.readLine());
+				int bx = Integer.parseInt(st.nextToken());
+				int by = Integer.parseInt(st.nextToken());
+				grid[by][bx] = 'x';
+			}
+		}
+	}
+}

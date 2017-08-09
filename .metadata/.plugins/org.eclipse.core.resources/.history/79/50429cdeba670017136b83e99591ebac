@@ -1,0 +1,61 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class IsBiggerSmarter {
+	static ArrayList<Triple> e;
+	static int[][] memo;
+
+	static class Triple implements Comparable<Triple> {
+		int w;
+		int iq;
+		int idx;
+
+		public Triple(int a, int b, int c) {
+			w = a;
+			iq = b;
+			idx = c;
+		}
+
+		@Override
+		public int compareTo(Triple o) {
+			if (w != o.w)
+				return w - o.w;
+			return o.iq - iq;
+		}
+	}
+
+	static int LDS(int idx, int prev) {
+		if (idx == e.size())
+			return 0;
+
+		if (memo[idx][prev] != -1)
+			return memo[idx][prev];
+
+		int leave = LDS(idx + 1, prev);
+		int take = 0;
+		if (prev < e.get(idx).iq)
+			take = LDS(idx + 1, e.get(idx).iq);
+
+		return memo[idx][prev] = Math.max(take, leave);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		e = new ArrayList<>();
+		StringTokenizer st;
+		int i = 1;
+		while (bf.ready()) {
+			st = new StringTokenizer(bf.readLine());
+			e.add(new Triple(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), i++));
+		}
+		e.sort(null);
+		memo = new int[e.size()][10001];
+		for (int j = 0; j < e.size(); j++)
+			Arrays.fill(memo[j], -1);
+		System.out.println(LDS(0, 0));
+	}
+}

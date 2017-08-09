@@ -1,0 +1,58 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class GameofTwoStacks {
+	static int[] A;
+	static int[] B;
+	static int INF = (int) -1e9;
+	static int n, m;
+	static long dp[][][];
+
+	public static long dp(int idxA, int idxB, int rem) {
+		if (idxA == n || idxB == m)
+			return 0;
+
+		if (dp[idxA][idxB][rem] != -1)
+			return dp[idxA][idxB][rem];
+
+		long takeA = 0;
+		long takeB = 0;
+
+		if (rem - A[idxA] >= 0)
+			takeA = 1 + dp(idxA + 1, idxB, rem - A[idxA]);
+
+		if (rem - B[idxB] >= 0)
+			takeB = 1 + dp(idxA, idxB + 1, rem - B[idxB]);
+
+		return dp[idxA][idxB][rem] = Math.max(takeA, takeB);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int g = Integer.parseInt(bf.readLine());
+		while (g-- > 0) {
+			StringTokenizer st = new StringTokenizer(bf.readLine());
+			n = Integer.parseInt(st.nextToken());
+			m = Integer.parseInt(st.nextToken());
+			int x = Integer.parseInt(st.nextToken());
+			A = new int[n];
+			B = new int[m];
+			st = new StringTokenizer(bf.readLine());
+			for (int i = 0; st.hasMoreTokens(); i++)
+				A[i] = Integer.parseInt(st.nextToken());
+			st = new StringTokenizer(bf.readLine());
+			for (int i = 0; st.hasMoreTokens(); i++)
+				B[i] = Integer.parseInt(st.nextToken());
+			dp = new long[n][m][x + 1];
+			for (int i = 0; i < n; i++) {
+				for (int j = 0; j < m; j++) {
+					Arrays.fill(dp[i][j], -1);
+				}
+			}
+			System.out.println(dp(0, 0, x));
+		}
+	}
+}

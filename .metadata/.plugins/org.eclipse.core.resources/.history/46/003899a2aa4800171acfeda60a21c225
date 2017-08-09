@@ -1,0 +1,40 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class DressemnVests {
+	static int[] vests;
+
+	public static int BSfindFirst(int start, int end, int si, int ei) {
+		while (start < end) {
+			int mid = start + ((end - start) / 2);
+			if (vests[mid] > ei)
+				end = mid - 1;
+			else if (vests[mid] < si)
+				start = mid + 1;
+			else
+				end = mid;
+		}
+		if (vests[start] >= si && vests[start] <= ei)
+			return start;
+		return -1;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(bf.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		int x = Integer.parseInt(st.nextToken());
+		int y = Integer.parseInt(st.nextToken());
+		int[] soldiers = new int[n];
+		st = new StringTokenizer(bf.readLine());
+		for (int i = 0; i < n; i++)
+			soldiers[i] = Integer.parseInt(st.nextToken());
+		vests = new int[m];
+		for (int i = 0; i < m; i++)
+			vests[i] = Integer.parseInt(st.nextToken());
+
+	}
+}

@@ -1,0 +1,19 @@
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.TreeMap;
+
+public class testing {
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(new FileWriter("cases.out"));
+		String s;
+		int c = 1;
+		while ((s = bf.readLine()) != "1 1") {
+			out.println(c + ": " + s);
+			c++;
+		}
+	}
+}

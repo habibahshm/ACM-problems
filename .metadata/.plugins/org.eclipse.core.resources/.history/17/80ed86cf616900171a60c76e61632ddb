@@ -1,0 +1,110 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class StackingBoxes {
+	static Box[] boxes;
+	static int b, d;
+	static int[][] memo;
+	static String ans;
+
+	static class Box implements Comparable<Box> {
+		int[] dimensions;
+		int idx;
+
+		public Box(int[] d, int i) {
+			dimensions = d;
+			idx = i;
+		}
+
+		@Override
+		public int compareTo(Box o) {
+			int s1 = 0;
+			int s2 = 0;
+			for (int j = 0; j < dimensions.length; j++)
+				s1 += dimensions[j];
+			for (int j = 0; j < o.dimensions.length; j++)
+				s2 += o.dimensions[j];
+			return s1 - s2;
+		}
+
+		public String toString() {
+			String s = "";
+			for (int i = 0; i < d; i++)
+				s += dimensions[i] + " ";
+			return s + "  idx: " + idx;
+		}
+
+	}
+
+	static boolean nesting(Box a, Box b) {
+		for (int i = 0; i < d; i++)
+			if (a.dimensions[i] >= b.dimensions[i])
+				return false;
+		return true;
+	}
+
+	static int LDS(int i, int prev) {
+		if (i > b)
+			return 0;
+
+		if (memo[i][prev] != -1)
+			return memo[i][prev];
+
+		int leave = LDS(i + 1, prev);
+		int take = 0;
+		if (nesting(boxes[prev], boxes[i]))
+			take = LDS(i + 1, i) + 1;
+
+		return memo[i][prev] = Math.max(leave, take);
+
+	}
+
+	static void print(int i, int prev) {
+		if (i > b)
+			return;
+		int best = memo[i][prev];
+		if (best == memo[i + 1][i] + 1) {
+			ans += boxes[i].idx + " ";
+			print(i + 1, i);
+		} else
+			print(i + 1, prev);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		while (true) {
+			st = new StringTokenizer(bf.readLine());
+			b = Integer.parseInt(st.nextToken());
+			d = Integer.parseInt(st.nextToken());
+			boxes = new Box[b + 1];
+
+			int[] dimen = new int[d];
+			boxes[0] = new Box(dimen, 0);
+
+			for (int i = 1; i <= b; i++) {
+				st = new StringTokenizer(bf.readLine());
+				int[] dim = new int[d];
+				for (int j = 0; st.hasMoreTokens(); j++)
+					dim[j] = Integer.parseInt(st.nextToken());
+				Arrays.sort(dim);
+				boxes[i] = new Box(dim, i);
+			}
+			Arrays.sort(boxes);
+			for (int i = 0; i <= b; i++)
+				System.out.println(boxes[i] + " ");
+			memo = new int[b + 2][b + 1];
+			for (int i = 0; i <= b; i++)
+				Arrays.fill(memo[i], -1);
+			ans = "";
+			System.out.println(LDS(1, b));
+			print(1, 0);
+			for (int i = 0; i < ans.length() - 1; i++)
+				System.out.print(ans.charAt(i));
+			System.out.println();
+		}
+	}
+}

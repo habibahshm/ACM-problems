@@ -1,0 +1,41 @@
+
+public class Os {
+	static int mod(int x, int y) {
+		int temp1 = 0;
+		int temp2 = 0;
+		if (x > y) {
+			temp1 = x;
+			temp2 = y;
+		} else {
+			temp1 = y;
+			temp2 = x;
+		}
+
+		while (temp1 >= temp2) {
+			temp1 = temp1 - temp2;
+		}
+
+		return temp1;
+	}
+
+	static int div(int x, int y) {
+		int temp1 = 0;
+		int temp2 = 0;
+		int i = 0;
+		if (x > y) {
+			temp1 = x;
+			temp2 = y;
+		} else {
+			temp1 = y;
+			temp2 = x;
+		}
+
+		while ((i + 1) * temp2 <= temp1)
+			i = i + 1;
+		return i;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(div(4, 2) + " " + mod(3, 5));
+	}
+}
