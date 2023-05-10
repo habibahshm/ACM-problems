@@ -30,6 +30,32 @@ public class Dijkstra {
 		}
 		return -1;
 	}
+	
+	//Informed Dijkstra ( A*), input the heuristic array for each node
+	public static int A_star(int s, int t, int[] h) {
+		int[] dist = new int[V];
+		Arrays.fill(dist, INF);
+		dist[s] = 0;
+		PriorityQueue<Edge> pq = new PriorityQueue<>();
+		pq.add(new Edge(s, 0));
+		while (!pq.isEmpty()) {
+			Edge u = pq.poll();
+			if (u.cost > dist[u.v])
+				continue;
+			if (u.v == t)
+				return dist[u.v];
+			for (int i = 0; i < adjlist[u.v].size(); i++) {
+				Edge v = adjlist[u.v].get(i);
+				if (dist[u.v] + v.cost < dist[v.v]) {
+					dist[v.v] = dist[u.v] + v.cost;
+					int cost = dist[v.v] + h[v.v];
+					pq.add(new Edge(v.v, cost));
+				}
+			}
+		}
+		return -1;
+	}
+
 
 	static class Edge implements Comparable<Edge> {
 		int v;
